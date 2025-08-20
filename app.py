@@ -1,6 +1,6 @@
 import os
+import requests
 from flask import Flask, render_template, request, jsonify, send_file
-from groq import Groq
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.pagesizes import letter
@@ -83,4 +83,5 @@ def download_pdf():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
 
