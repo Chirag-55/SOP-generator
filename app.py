@@ -7,8 +7,10 @@ from reportlab.lib.pagesizes import letter
 
 app = Flask(__name__)
 
-# Initialize Groq client (direct way)
+# Get API key
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+API_URL = "https://api.groq.com/openai/v1/chat/completions"
+
 generated_sop = None  # store latest SOP text
 
 
@@ -47,12 +49,20 @@ def generate_sop():
     """
 
     try:
-        response = client.chat.completions.create(
-            model="llama3-8b-8192",   # ✅ Groq-supported model
-            messages=[{"role": "user", "content": prompt}]
-        )
+        headers = {
+            "Authorization": f"Bearer {GROQ_API_KEY}",
+            "Content-Type": "application/json",
+        }
+        payload = {
+            "model": "llama3-8b-8192",  # ✅ Groq-supported model
+            "messages": [{"role": "user", "content": prompt}],
+        }
 
-        generated_sop = response.choices[0].message.content.strip()
+        response = requests.post(API_URL, headers=headers, json=payload)
+        response.raise_for_status()
+        result = response.json()
+
+        generated_sop = result["choices"][0]["message"]["content"].strip()
         return jsonify({"sop": generated_sop})
 
     except Exception as e:
@@ -82,6 +92,6 @@ def download_pdf():
 
 
 if __name__ == "__main__":
+    if not GROQ_API_KEY:
+        raise ValueError("❌ GROQ_API_KEY is missing! Please set it in environment variables.")
     app.run(debug=True)
-
-
