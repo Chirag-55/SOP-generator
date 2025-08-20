@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SOP Generator</title>
+  <style>
+    body {
+      font-family: "Roboto", Arial, sans-serif;
+      background-color: #ede7f6; /* lavender background */
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .form-container {
+      background: #fff;
+      margin-top: 40px;
+      padding: 0 0 40px 0;
+      border-radius: 8px;
+      width: 640px;
+      box-shadow: 0 1px 6px rgba(32,33,36,0.28);
+    }
+
+    .header {
+      background-color: #673ab7; /* Google Forms purple */
+      height: 10px;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .title-section {
+      padding: 24px 32px 16px 32px;
+    }
+
+    .title-section h1 {
+      font-size: 24px;
+      font-weight: 500;
+      margin: 0 0 8px 0;
+      color: #202124;
+    }
+
+    .title-section p {
+      font-size: 14px;
+      color: #5f6368;
+      margin: 0;
+    }
+
+    .question {
+      padding: 20px 32px;
+      border-top: 1px solid #dadce0;
+    }
+
+    .question label {
+      display: block;
+      font-size: 16px;
+      color: #202124;
+      margin-bottom: 6px;
+    }
+
+    .required {
+      color: #d93025;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #dadce0;
+      padding: 8px 4px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    input[type="text"]:focus, textarea:focus {
+      border-bottom: 2px solid #673ab7;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 50px;
+    }
+
+    .button-group {
+      padding: 24px 32px;
+    }
+
+    button {
+      background: #673ab7;
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: #5e35b1;
+    }
+
+    h2 {
+      font-size: 18px;
+      font-weight: 500;
+      color: #202124;
+      margin: 20px 32px 10px 32px;
+    }
+
+    pre {
+      background: #f1f3f4;
+      margin: 0 32px;
+      padding: 15px;
+      border-radius: 4px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 14px;
+      border: 1px solid #e0e0e0;
+    }
+  </style>
+
+  <script>
+    async function generateSOP() {
+      const name = document.getElementById("name").value;
+      const age = document.getElementById("age").value;
+      const country = document.getElementById("country").value;
+      const course = document.getElementById("course").value;
+      const university = document.getElementById("university").value;
+      const background = document.getElementById("background").value;
+      const goals = document.getElementById("goals").value;
+
+      const response = await fetch("/generate_sop", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, age, country, course, university, background, goals })
+      });
+
+      const data = await response.json();
+      document.getElementById("result").innerText = data.sop || data.error;
+    }
+
+    function downloadPDF() {
+      window.open("/download_pdf", "_blank");
+    }
+  </script>
+</head>
+<body>
+  <div class="form-container">
+    <div class="header"></div>
+    <div class="title-section">
+      <h1>SOP Generator</h1>
+      <p>Please fill in the details below to generate your Statement of Purpose.</p>
+    </div>
+
+    <div class="question">
+      <label>Name <span class="required">*</span></label>
+      <input type="text" id="name" placeholder="Your answer">
+    </div>
+
+    <div class="question">
+      <label>Age <span class="required">*</span></label>
+      <input type="text" id="age" placeholder="Your answer">
+    </div>
+
+    <div class="question">
+      <label>Country <span class="required">*</span></label>
+      <input type="text" id="country" placeholder="Your answer">
+    </div>
+
+    <div class="question">
+      <label>Course <span class="required">*</span></label>
+      <input type="text" id="course" placeholder="Your answer">
+    </div>
+
+    <div class="question">
+      <label>University <span class="required">*</span></label>
+      <input type="text" id="university" placeholder="Your answer">
+    </div>
+
+    <div class="question">
+      <label>Background <span class="required">*</span></label>
+      <textarea id="background" placeholder="Your answer"></textarea>
+    </div>
+
+    <div class="question">
+      <label>Goals <span class="required">*</span></label>
+      <textarea id="goals" placeholder="Your answer"></textarea>
+    </div>
+
+    <div class="button-group">
+      <button onclick="generateSOP()">Generate SOP</button>
+      <button onclick="downloadPDF()" style="margin-left:10px;">Download as PDF</button>
+    </div>
+
+    <h2>Generated SOP</h2>
+    <pre id="result"></pre>
+  </div>
+</body>
+</html>
