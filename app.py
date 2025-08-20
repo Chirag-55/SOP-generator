@@ -8,7 +8,7 @@ from reportlab.lib.pagesizes import letter
 app = Flask(__name__)
 
 # Initialize Groq client (direct way)
-client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 generated_sop = None  # store latest SOP text
 
 
@@ -83,3 +83,4 @@ def download_pdf():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
